@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Learning.Controllers
@@ -10,10 +9,21 @@ namespace Learning.Controllers
     [ApiController]
     public class ValuesController : ControllerBase
     {
+        private readonly TelemetryClient _insightsClient;
+
+        public ValuesController(TelemetryClient insightsClient)
+        {
+            _insightsClient = insightsClient;
+            _insightsClient.TrackPageView("Values Controller");
+
+        }
         // GET api/values
         [HttpGet]
         public ActionResult<IEnumerable<string>> Get()
         {
+            _insightsClient.TrackEvent("justforfun");
+            _insightsClient.TrackTrace("Someone came here with food", Microsoft.ApplicationInsights.DataContracts.SeverityLevel.Information);
+
             return new string[] { "value1", "value2" };
         }
 
@@ -40,6 +50,22 @@ namespace Learning.Controllers
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
+        }
+
+        [HttpGet]
+        [Route("exception")]
+        public ActionResult ThrowException()
+        {
+            try
+            {
+                throw new System.Exception();
+            }
+            catch (Exception ex)
+            {
+                _insightsClient.TrackException(ex);
+            }
+
+            return Ok();
         }
     }
 }
