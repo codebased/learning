@@ -1,3 +1,4 @@
+using Learning.Mixin;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace LearningTests
@@ -8,6 +9,10 @@ namespace LearningTests
         [TestMethod]
         public void TestMethod1()
         {
+            var player = new DvdPlayer();
+            player.PlayAudio();
+            player.PlayVideo();
         }
     }
 }
+
