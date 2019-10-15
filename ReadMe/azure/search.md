@@ -281,3 +281,8 @@ References
 [How full text search works in Azure Search](https://docs.microsoft.com/en-us/azure/search/search-lucene-query-architecture)
 
 [How to rebuild an Azure Search index](https://docs.microsoft.com/en-us/azure/search/search-howto-reindex)
+
+Other references
+
+https://www.henkboelman.com/articles/azure-search-the-basics/
+
