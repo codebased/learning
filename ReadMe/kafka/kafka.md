@@ -183,7 +183,7 @@ producer.send(producerRecord)l;
 producer.close();
 ```
 
-When send command is thrown: 
+When send command is thrown:
 
 * Serializer
 * Partitioner - These are the possible strategies
@@ -247,21 +247,21 @@ Just like producer, consumer also need three mandatory properties.
 
 * `bootstrap.servers` - it is a comma separated list of broker servers, in the format of {servername/ip}:{port}, which is used to retrieve the information about the entire cluster membership: partition leaders, etc.
 
-* `key.deserializer` - Class used for message key deserialization. By defining key deserializer you are defining stronly type for the key that is expected.
+* `key.deserializer` - Class used for message key deserialization. By defining key deserializer you are defining strongly type for the key that is expected.
 
 * `value.deserializer` - Class used for message value deserialization. By defining value deserializer you are defining strongly type for the value that is expected.
 
 ```java
 props.put("bootstrap.servers", "localhost:9092, localhost:9093");
-        props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
-        props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+props.put("key.deserializer","org.apache.kafka.common.serialization.StringDeserializer");
+props.put("value.deserializer","org.apache.kafka.common.serialization.StringDeserializer");
 ```
 
 You can consume topics through two ways:
 
 * Subscribe
 
-  Consumers can subscribe to a topic or multiple topics using subscribe(...). You don't have to worry about each partition where the data will come from. If there is any new partition, the subscriber will get to know automatically and will get data from that partition as well; it works like auto-administrating mode.
+  Consumers can subscribe to a topic or multiple topics using subscribe(...). You don't have to worry about each partition where the data will come from. If there is any new partition, the cluster metadata will be changed, thus the subscriber will get to know automatically and will get data from that new partition as well; it works like auto-administrating mode.
 
     ```java
     KafkaConsumer consumer = new KafkaConsumer(props);
@@ -272,18 +272,67 @@ You can consume topics through two ways:
     ```
 
 * Assign
-  
+
   Consumers can subscribe to a specific topic partition using assign(...). In this version of subscription, the consumer will tell which partition it would want to listen and consume messages from. Thus, it will not read messages coming to some specific partition; it works like self-administrating mode.
 
+  ```java
+  TopicPartition topicPartition = new TopicPartition("accounts_service",0);
+  consumer.assign(Arrays.asList(topicPartition));
+  ```
+
+#### The Poll Loop
+
+By invoking poll method, the consumer will continuously polling the brokers for data. You will pass an integer, represent timeout milliseconds. It will call the bootstrap server to fetch metadata. It is a timeout setting for how long the consumer fetcher will take time to retrieve one or more consumer messages.
+
+The poll() process is a single-threaded operation.
 
 #### The Offset
 
 It is a placeholder/ or a bookmark that is maintained by the Kafka Consumer. It represents the last read message position in the form of message id. The consumer can decide from where it wants to read, from the beginning, the last or from the middle of a topic message queue.
 
+Offset Types:
+
+* Last committed offset - the last record that the consumer has confirmed that it has processed. For each partition, there will be a separate offset.
+* Current position offset - As the consumer reads message, it moves the counter.
+* Log-end offset - last index of a message in that partition.
+* Un-committed offsets - As the consumer advances, the difference between last committed offset and customer position offset is called un-committed offsets.
+
+Important Configuration properties
+
+* enable.auto.commit(true) - it uses auto.commit.interval.ms (5000) power to commit the last committed offset flag automatically.
+* auto.commit.interval.ms(5000ms) - It is defined in ms. Please note that even if the process takes longer than 5000 ms, it will commit the record even when it is not processed by the system. What happened if the process is failed and "last committed offset" has already moved on?
+* auto.offset.reset(latest) - It can be latest, earliest, none value.
+
+Kafka stores offsets in __consumer_offsets topic. It has 0 to 49 (50) partitions.Consumer cordinator is responsible to manage __consumer_offsets topic.
+
+Log end offset - The last record offset in the partition.
+
+Manual Offset management:
+
+By setting enable.auto.commit to false will make offset management manually.
+
+* commitSync()
+* commitAsync()account
+
+Why you want to take a offset management control?
+
+* You will use manual offset management for higher consistency control.
+* Atomicity - Exactly once vs At least once
+
+Common configuration
+
+* Consumer performance and efficiency
+  * fetch.min.bytes
+  * max.fetch.wait.ms
+  * max.partition.fetch.bytes
+  * max.poll.records
+kink
+
 ##### Offset commands
 
 | What | Example |
 |---------------|--------------|
+| Get a list partitions for offset topics | `bin/kafka-topics.sh --zookeeper localhost:2181 --describe --topic __consumer_offsets` |
 |Get the earliest offset still in a topic| `bin/kafka-run-class.sh kafka.tools.GetOffsetShell --broker-list localhost:9092 --topic mytopic --time -2`|
 |Get the latest offset still in a topic|`bin/kafka-run-class.sh kafka.tools.GetOffsetShell --broker-list localhost:9092 --topic mytopic --time -1`|
 |Get the consumer offsets for a topic|`bin/kafka-consumer-offset-checker.sh --zookeeper=localhost:2181 --topic=mytopic --group=my_consumer_group`|
@@ -298,6 +347,13 @@ Add the following property to
 `exclude.internal.topics=false`
 
 `bin/kafka-console-consumer.sh --consumer.config config/consumer.properties --from-beginning --topic __consumer_offsets --zookeeper localhost:2181 --formatter "kafka.coordinator.GroupMetadataManager\$OffsetsMessageFormatter"`
+
+### Consumer Group
+
+It is used to bring parallelism in managing and processing events.
+Consumer can subscribe to a group using "group.id" property.
+You can create number of consumer equal or more than partitions. If you have more consumer than partitions, the consumer will seat idle.
+
 
 ## Kafka Consumer Groups
 
