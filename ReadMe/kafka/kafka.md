@@ -37,9 +37,13 @@ Main use cases:
 
 ### Docker Installation
 
-Easiest way to setup kafka environment is to use docker images.
+Easiest way to setup kafka environment is to use confluent docker images.
 
 Just download this docker compose file and follow through this guide: <https://docs.confluent.io/current/quickstart/ce-docker-quickstart.html>
+
+> This is the location where docker-compose file is stored for me /Users/codebased/Documents/Softwares/examples/cp-all-in-one
+> Use the following commands
+> `docker-compose up` or `docker-compose down`.
 
 After the successful response, you will have the whole kafka environment running, including control center, broker, zookeeper, schema manager
 
@@ -378,3 +382,26 @@ In order to control this, schema registry has been introduced by the company cal
 Consistency and Productivity - There is an integration cost involved with developing a connect when transferring data from one place to another. In order to solve this Kafka Connect has emerged.
 
 Fast Data - Kafka Stream based process has been introduced to stream data into a different environment such as Kafka Spark, Hadoop in real time.
+
+
+### Confluent Schema Registry
+
+It is a versioned schema registry for Apache Avro, which is used to serialize and deserilize complex data formats when interacting with kafka.
+
+Schema registry becomes a central point to store these schemas, in which Kafka producers and consumers interact to know the message template. The producer can specify the complex format for the data that it wants to publish, and consumer will then consult schema registry to understand the message format and read appropriately.
+
+Schemas can be applied on keys, and values in the message.
+
+`Think of these schemas as WSDL in web service environment (WSDL is an XML document that describes a web service methods, request message schema and response message schema).`
+
+
+
+Future Topics:
+
+[SAGA Architecture](https://stackoverflow.com/questions/43845183/implementing-sagas-with-kafka)
+
+[Compaction Log Architecture](http://cloudurable.com/blog/kafka-architecture-log-compaction/index.html)
+
+[Multi Cluster replication](https://docs.confluent.io/current/multi-dc-replicator/index.html)
+
+[MirrorMaker](https://cwiki.apache.org/confluence/pages/viewpage.action?pageId=27846330)
