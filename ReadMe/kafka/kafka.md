@@ -394,7 +394,7 @@ Schemas can be applied on keys, and values in the message.
 
 `Think of these schemas as WSDL in web service environment (WSDL is an XML document that describes a web service methods, request message schema and response message schema).`
 
-
+![Confluent Schema Registry Block Diagram](https://github.com/codebased/learning/blob/master/ReadMe/kafka/drawio/Confluent%20Schema%20Registry.png?raw=true)
 
 Future Topics:
 
