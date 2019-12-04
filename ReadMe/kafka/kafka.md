@@ -2,44 +2,40 @@
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents*-  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
-- [KAFKA](#kafka)
+- [Introduction](#introduction)
   - [Before Kafka](#before-kafka)
   - [Why Kafka](#why-kafka)
-  - [Setup Environment](#setup-environment)
-    - [Vanilla Installation](#vanilla-installation)
-    - [Docker Installation](#docker-installation)
-  - [Architecture Components](#architecture-components)
+- [Setup Environment](#setup-environment)
+  - [Vanilla Installation](#vanilla-installation)
+  - [Docker Installation](#docker-installation)
+  - [Kafka Components](#kafka-components)
     - [Topic](#topic)
       - [Topic Commands](#topic-commands)
       - [Partitioning](#partitioning)
       - [Message Retention Policy](#message-retention-policy)
-  - [Concepts](#concepts)
-    - [Commit Logs](#commit-logs)
-    - [Partitions](#partitions)
-    - [Message Buffer](#message-buffer)
-  - [Producer](#producer)
-    - [Delivery Guarantees](#delivery-guarantees)
-    - [Kafka Producer Consumer Console](#kafka-producer-consumer-console)
-    - [Fault-tolerance](#fault-tolerance)
+    - [Producer](#producer)
+      - [Delivery Guarantees](#delivery-guarantees)
+      - [Kafka Producer Consumer Console](#kafka-producer-consumer-console)
+      - [Fault-tolerance](#fault-tolerance)
     - [Consumer](#consumer)
       - [The Poll Loop](#the-poll-loop)
       - [The Offset](#the-offset)
         - [Offset commands](#offset-commands)
       - [Internal __consumer_offsets](#internal-__consumer_offsets)
       - [Read from __consumer_offsets](#read-from-__consumer_offsets)
-    - [Consumer Group](#consumer-group)
-  - [Kafka Consumer Groups](#kafka-consumer-groups)
-  - [Zookeeper](#zookeeper)
-  - [Confluent Schema Registry](#confluent-schema-registry)
-    - [Confluent Schema Registry UI](#confluent-schema-registry-ui)
-  - [Confluent REST Proxy](#confluent-rest-proxy)
+      - [Consumer Group](#consumer-group)
+        - [Commands](#commands)
+    - [Zookeeper](#zookeeper)
+    - [Confluent Schema Registry](#confluent-schema-registry)
+      - [Confluent Schema Registry UI](#confluent-schema-registry-ui)
+    - [Confluent REST Proxy](#confluent-rest-proxy)
 - [REFERENCES](#references)
   - [Confluent Schema](#confluent-schema)
 - [Future Topics](#future-topics)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# KAFKA
+# Introduction
 
 Apache Kafka is publish subscribe messaging rethought as a distributed commit log.
 
@@ -65,9 +61,9 @@ Main use cases:
 - Large scale data movement pipeline
 - Big Data Integration
 
-## Setup Environment
+# Setup Environment
 
-### Vanilla Installation
+## Vanilla Installation
 
 - Download kafka binary and unzip.
 - Start the zookeeper
@@ -76,7 +72,7 @@ Main use cases:
 - Start the broker with this command: `bin/kafka-server-start.sh config/server.properties`
 - If you want to run an another broker/ worker node, just create a new server.properties with unique id `broker.id=1` and now you are ready to run a server command `bin/kafka-server-start.sh config/server1.properties`
 
-### Docker Installation
+## Docker Installation
 
 Easiest way to setup kafka environment is to use confluent docker images.
 
@@ -94,7 +90,7 @@ After the successful response, you will have the whole kafka environment running
 >
 > Install Docker Compose <https://docs.docker.com/compose/install/>
 
-## Architecture Components
+## Kafka Components
 
 ### Topic
 
@@ -156,21 +152,7 @@ You can use this command to set the retention policy on topic.
 |--------|-------|----------------|
 | Record/Message Retention | bin/kafka-topics.sh --zookeeper {server}:{port} --alter --topic {topic} --config retention.ms={duration} | bin/kafka-topics.sh --zookeeper localhost:2181 --alter --topic mytopic --config retention.ms=28800000- |
 
-## Concepts
-
-### Commit Logs
-
-It is a source of truth. It is stored in an order the events are happened. It is a point of recovery and basis for replication and redundancy.
-
-### Partitions
-
-Each topic has one or more partitions, which is entirely configurable at topic level.
-
-Partitioning Strategy
-
-### Message Buffer
-
-## Producer
+### Producer
 
 In order to produce messages for kafka, you need to provide at least three properties that are mandatory to connect with the Kafka.
 
@@ -225,7 +207,7 @@ When send command is thrown:
   - key mode hash
   - custom
 
-### Delivery Guarantees
+#### Delivery Guarantees
 
 Kafka provides three different types of guarantee settings that can be set at topic level.
 
@@ -250,14 +232,14 @@ By default, Kafka provides at-least-once delivery guarantees.
 | No duplicate message is possible | Likely Duplicate message | No duplicate message |
 | Possibility of missing data | No Missing data | No missing data|
 
-### Kafka Producer Consumer Console
+#### Kafka Producer Consumer Console
 
 | Type   | Command      |     Example    |  
 |--------|-------|----------------|
 | Produce | `$ kafka-console-producer.sh --broker-list {broker server list} --topic {topic name}` | `$ kafka-console-producer.sh --broker-list localhost:9092 --topic test` |
 | Consumer | `kafka-console-consumer.sh --bootstrap-server {serverip:port} --topic {topic name} --from-beginning` (new api) | `kafka-console-consumer.sh     --bootstrap-server localhost:9092     --topic test     --from-beginning`  |
 
-### Fault-tolerance
+#### Fault-tolerance
 
 - Broker failure
   
@@ -386,19 +368,19 @@ Add the following property to
 
 `bin/kafka-console-consumer.sh --consumer.config config/consumer.properties --from-beginning --topic __consumer_offsets --zookeeper localhost:2181 --formatter "kafka.coordinator.GroupMetadataManager\$OffsetsMessageFormatter"`
 
-### Consumer Group
+#### Consumer Group
 
 It is used to bring parallelism in managing and processing events.
 Consumer can subscribe to a group using "group.id" property.
 You can create number of consumer equal or more than partitions. If you have more consumer than partitions, the consumer will seat idle.
 
-## Kafka Consumer Groups
+##### Commands
 
 | Type   | Command      |     Example    |  
 |--------|--------------|----------------|
 | List the consumer groups known to Kafka | `bin/kafka-consumer-groups.sh --zookeeper localhost:2181 --list`  (old api) `bin/kafka-consumer-groups.sh --new-consumer --bootstrap-server localhost:9092 --list` (new api) | |
 
-## Zookeeper
+### Zookeeper
 
 | Type   | Command      |     Example    |  
 |--------|-------|----------------|
@@ -416,7 +398,7 @@ Consistency and Productivity - There is an integration cost involved with develo
 
 Fast Data - Kafka Stream based process has been introduced to stream data into a different environment such as Kafka Spark, Hadoop in real time.
 
-## Confluent Schema Registry
+### Confluent Schema Registry
 
 It is a versioned schema registry for Apache Avro, which is used to serialize and deserilize complex data formats when interacting with kafka.
 Schema registry becomes a central point to store these schemas, in which Kafka producers and consumers interact to know the message template. The producer can specify the complex format for the data that it wants to publish, and consumer will then consult schema registry to understand the message format and read appropriately.
@@ -431,7 +413,7 @@ Schema compatibility checking is by default set as "Backward". For more details 
 
 `You can interact with the registry api using http://localhost:8081`.
 
-### Confluent Schema Registry UI
+#### Confluent Schema Registry UI
 
 You can interact with registry, using [this](https://github.com/lensesio/schema-registry-ui) open source UI.
 
@@ -439,7 +421,7 @@ You can interact with registry, using [this](https://github.com/lensesio/schema-
 
 > Known issue with [502 Bad Gateway](https://github.com/lensesio/schema-registry-ui/issues/64)
 
-## Confluent REST Proxy
+### Confluent REST Proxy
 
 ![Confluent REST Proxy](https://github.com/codebased/learning/blob/master/ReadMe/kafka/drawio/Confluent%20REST%20Proxy.png?raw=true)
 
