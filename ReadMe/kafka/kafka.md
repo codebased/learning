@@ -1,8 +1,10 @@
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+**Table of Contents*-  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
 - [KAFKA](#kafka)
+  - [Before Kafka](#before-kafka)
+  - [Why Kafka](#why-kafka)
   - [Setup Environment](#setup-environment)
     - [Vanilla Installation](#vanilla-installation)
     - [Docker Installation](#docker-installation)
@@ -11,13 +13,14 @@
       - [Topic Commands](#topic-commands)
       - [Partitioning](#partitioning)
       - [Message Retention Policy](#message-retention-policy)
-  - [Kafka Producer Consumer Console](#kafka-producer-consumer-console)
   - [Concepts](#concepts)
     - [Commit Logs](#commit-logs)
     - [Partitions](#partitions)
-  - [Message Buffer](#message-buffer)
-    - [Producer](#producer)
-      - [Delivery Guarantees](#delivery-guarantees)
+    - [Message Buffer](#message-buffer)
+  - [Producer](#producer)
+    - [Delivery Guarantees](#delivery-guarantees)
+    - [Kafka Producer Consumer Console](#kafka-producer-consumer-console)
+    - [Fault-tolerance](#fault-tolerance)
     - [Consumer](#consumer)
       - [The Poll Loop](#the-poll-loop)
       - [The Offset](#the-offset)
@@ -27,10 +30,12 @@
     - [Consumer Group](#consumer-group)
   - [Kafka Consumer Groups](#kafka-consumer-groups)
   - [Zookeeper](#zookeeper)
-    - [Confluent Schema Registry](#confluent-schema-registry)
-      - [Confluent Schema Registry UI](#confluent-schema-registry-ui)
-    - [Confluent REST PROXY](#confluent-rest-proxy)
-    - [Confluent Schema](#confluent-schema)
+  - [Confluent Schema Registry](#confluent-schema-registry)
+    - [Confluent Schema Registry UI](#confluent-schema-registry-ui)
+  - [Confluent REST Proxy](#confluent-rest-proxy)
+- [REFERENCES](#references)
+  - [Confluent Schema](#confluent-schema)
+- [Future Topics](#future-topics)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -38,38 +43,38 @@
 
 Apache Kafka is publish subscribe messaging rethought as a distributed commit log.
 
-Before Kafka:
+## Before Kafka
 
-Database Replication (log shipping)- RDBMS to RDBMS , Or Database specific, which is tightly coupled with the schema that is difficult to modify. Also, the impact of replication on overall system.
- 
-ETL (Extract, Transform, and Load) - most of the times are proprietary, or a custom application build and maintain by the company. It has scalability and performance drawbacks.
+- Database Replication (log shipping)- RDBMS to RDBMS , Or Database specific, which is tightly coupled with the schema that is difficult to modify. Also, the impact of replication on overall system.
 
-MSMQ - Limited functionality and scaling out was a biggest challenge with MSMQ that can only work with Microsoft technology. If the bug is there with the consumer, how to retrieve that message again? So it has many drawbacks such as consistency concerns, load handling,  Atomic transaction, that increase when you have complex system with big data set.
+- ETL (Extract, Transform, and Load) - most of the times are proprietary, or a custom application build and maintain by the company. It has scalability and performance drawbacks.
 
-Why Kafka
+- MSMQ - Limited functionality and scaling out was a biggest challenge with MSMQ that can only work with Microsoft technology. If the bug is there with the consumer, how to retrieve that message again? So it has many drawbacks such as consistency concerns, load handling,  Atomic transaction, that increase when you have complex system with big data set.
+
+## Why Kafka
 
 It is based on messaging system, which is based on messaging broker that commits to deliver the message. It scales out over many servers known as brokers. It can replay messages when required.
 
-* Designed for high throughput,  and lowest latency with distributed messaging (log) system. 
-* It is used to move data at high volumes.
-* It was open sourced under Apache Software Foundation in 2012 by LinkedIn.
+- Designed for high throughput,  and lowest latency with distributed messaging (log) system. 
+- It is used to move data at high volumes.
+- It was open sourced under Apache Software Foundation in 2012 by LinkedIn.
 
 Main use cases:
 
-* Connecting multiple sources of data
-* Large scale data movement pipeline
-* Big Data Integration
+- Connecting multiple sources of data
+- Large scale data movement pipeline
+- Big Data Integration
 
 ## Setup Environment
 
 ### Vanilla Installation
 
-* Download kafka binary and unzip.
-* Start the zookeeper
+- Download kafka binary and unzip.
+- Start the zookeeper
   `bin/zookeeper-server-start.sh config/zookeeper.properties`
-* Now you will configure the broker server pointing to the zookeeper address in server.properties `zookeeper.connect=localhost:2181`
-* Start the broker with this command: `bin/kafka-server-start.sh config/server.properties`
-* If you want to run an another broker/ worker node, just create a new server.properties with unique id `broker.id=1` and now you are ready to run a server command `bin/kafka-server-start.sh config/server1.properties`
+- Now you will configure the broker server pointing to the zookeeper address in server.properties `zookeeper.connect=localhost:2181`
+- Start the broker with this command: `bin/kafka-server-start.sh config/server.properties`
+- If you want to run an another broker/ worker node, just create a new server.properties with unique id `broker.id=1` and now you are ready to run a server command `bin/kafka-server-start.sh config/server1.properties`
 
 ### Docker Installation
 
@@ -99,14 +104,14 @@ Each topic is stored in a form of a log file or multiple log files based on numb
 
 Characteristics
 
-* Topic names are unique
-* It must have at least one partition and one replication
-* Messages are always append in the end
-* Stored Messages cannot be changed in the topic
-* Topics can be replicated between multiple brokers/ worker nodes
-* Consumers for topics are responsible to maintain offset/ bookmark
-* Topic data is stored in distributed commit log
-* By default partition data for each topic is stored in /tmp/kafka-logs/{topic}-{partition} directory that can be configured through server.properties file of each broker.
+- Topic names are unique
+- It must have at least one partition and one replication
+- Messages are always append in the end
+- Stored Messages cannot be changed in the topic
+- Topics can be replicated between multiple brokers/ worker nodes
+- Consumers for topics are responsible to maintain offset/ bookmark
+- Topic data is stored in distributed commit log
+- By default partition data for each topic is stored in /tmp/kafka-logs/{topic}-{partition} directory that can be configured through server.properties file of each broker.
 
 #### Topic Commands
 
@@ -124,19 +129,18 @@ In order to get better performance on reading data, partitioning topics queue in
 
 These are the following Trade-offs of partitions.
 
-* The more partitions the greater the zookeeper overhead
-  * With large partition numbers ensure proper ZK capacity
-* Message ordering can become complex
-  * One partition for global ordering that means horizontal scaling through multiple partitions may not be achievable
-  * Consumer-handling for ordering
-* The more partitions the longer the leader fail-over time
+- The more partitions the greater the zookeeper overhead
+  - With large partition numbers ensure proper ZK capacity
+- Message ordering can become complex
+  - One partition for global ordering that means horizontal scaling through multiple partitions may not be achievable
+  - Consumer-handling for ordering
+- The more partitions the longer the leader fail-over time
 
 | Type   | Command      |     Example    |  
 |--------|-------|----------------|
 | Partition | ./bin/kafka-topics.sh --zookeeper {server}:{port} --alter --topic {topic_name} --partitions {partition_number} | ./bin/kafka-topics.sh --zookeeper localhost:2181 --alter --topic accounts_service --partitions 3 |
 
 #### Message Retention Policy
-
 
 Even though I have been using messages to represent a data transferred through topics, in kafka terms it is called records. It is also consumed through ProducerRecord and ConsumerRecord classes.
 
@@ -150,20 +154,9 @@ You can use this command to set the retention policy on topic.
 
 | Type   | Command      |     Example    |  
 |--------|-------|----------------|
-| Record/Message Retention | bin/kafka-topics.sh --zookeeper {server}:{port} --alter --topic {topic} --config retention.ms={duration} | bin/kafka-topics.sh --zookeeper localhost:2181 --alter --topic mytopic --config retention.ms=28800000* |
-
-## Kafka Producer Consumer Console
-
-| Type   | Command      |     Example    |  
-|--------|-------|----------------|
-| Produce | `$ kafka-console-producer.sh --broker-list {broker server list} --topic {topic name}` | `$ kafka-console-producer.sh --broker-list localhost:9092 --topic test` |
-| Consumer | `kafka-console-consumer.sh --bootstrap-server {serverip:port} --topic {topic name} --from-beginning` (new api) | `kafka-console-consumer.sh     --bootstrap-server localhost:9092     --topic test     --from-beginning`  |
-| asdf | asdf | asdf |
-
+| Record/Message Retention | bin/kafka-topics.sh --zookeeper {server}:{port} --alter --topic {topic} --config retention.ms={duration} | bin/kafka-topics.sh --zookeeper localhost:2181 --alter --topic mytopic --config retention.ms=28800000- |
 
 ## Concepts
-
-
 
 ### Commit Logs
 
@@ -175,17 +168,17 @@ Each topic has one or more partitions, which is entirely configurable at topic l
 
 Partitioning Strategy
 
-## Message Buffer
+### Message Buffer
 
-### Producer
+## Producer
 
 In order to produce messages for kafka, you need to provide at least three properties that are mandatory to connect with the Kafka.
 
-* `bootstrap.servers` - it is a comma separated list of broker servers, in the format of {servername/ip}:{port}, which is used to retrieve the information about the entire cluster membership: partition leaders, etc.
+- `bootstrap.servers` - it is a comma separated list of broker servers, in the format of {servername/ip}:{port}, which is used to retrieve the information about the entire cluster membership: partition leaders, etc.
 
-* `key.serializer` - Class used for message key serialization. By defining key serializer you are defining stronly type for the key that is expected.
+- `key.serializer` - Class used for message key serialization. By defining key serializer you are defining stronly type for the key that is expected.
 
-* `value.serializer` - Class used for message value serialization. By defining value serializer you are defining strongly type for the value that is expected.
+- `value.serializer` - Class used for message value serialization. By defining value serializer you are defining strongly type for the value that is expected.
 
 ```java
 props.put("bootstrap.servers", "localhost:9092,localhost:9093");
@@ -205,15 +198,15 @@ new ProducerRecord<String, String>("my_topic", "my message");
 
 Mandatory Properties
 
-* Topic Name
-* Message - You must specify the topic name and the message value that you would want to send through.
+- Topic Name
+- Message - You must specify the topic name and the message value that you would want to send through.
 
 Optionals
 
-* Partition - Specific partition with the topic to send ProducerRecord
-* Timestamp - The unix timestamp applied to the record.
-* Key - A value to be used as  basis of determining the partition strategy to be employed by the kafka producer.
-  * It has a very useful purpose to route your message to a specific partition.
+- Partition - Specific partition with the topic to send ProducerRecord
+- Timestamp - The unix timestamp applied to the record.
+- Key - A value to be used as  basis of determining the partition strategy to be employed by the kafka producer.
+  - It has a very useful purpose to route your message to a specific partition.
 
 `KafkaProducer` - Now you need a KafkaProducer instance that can send this ProducerRecord type object.
 
@@ -225,18 +218,18 @@ producer.close();
 
 When send command is thrown:
 
-* Serializer
-* Partitioner - These are the possible strategies
-  * Direct - has a valid partition otherwise throw an exception.
-  * round-robin - No partition and has no key defined in the producerrecord then it goes through round-robin. If it has a key, and no custom strategy defined in producer config then use key mod-hash (defaultpartitioner)
-  * key mode hash
-  * custom
+- Serializer
+- Partitioner - These are the possible strategies
+  - Direct - has a valid partition otherwise throw an exception.
+  - round-robin - No partition and has no key defined in the producerrecord then it goes through round-robin. If it has a key, and no custom strategy defined in producer config then use key mod-hash (defaultpartitioner)
+  - key mode hash
+  - custom
 
-#### Delivery Guarantees
+### Delivery Guarantees
 
 Kafka provides three different types of guarantee settings that can be set at topic level.
 
-KAFKA AT-MOST-ONCE 
+KAFKA AT-MOST-ONCE
 
 Read the message and save its offset position before it possibly processes the message record in entirety; i.e. save to data lake. In case of failure, the consumer recovery process will resume from the previously saved offset position which is further beyond the last record saved to the data lake. This example demonstrates at-most-once semantics.  Data loss at data lake, for example, is possible.
 
@@ -257,23 +250,28 @@ By default, Kafka provides at-least-once delivery guarantees.
 | No duplicate message is possible | Likely Duplicate message | No duplicate message |
 | Possibility of missing data | No Missing data | No missing data|
 
+### Kafka Producer Consumer Console
 
+| Type   | Command      |     Example    |  
+|--------|-------|----------------|
+| Produce | `$ kafka-console-producer.sh --broker-list {broker server list} --topic {topic name}` | `$ kafka-console-producer.sh --broker-list localhost:9092 --topic test` |
+| Consumer | `kafka-console-consumer.sh --bootstrap-server {serverip:port} --topic {topic name} --from-beginning` (new api) | `kafka-console-consumer.sh     --bootstrap-server localhost:9092     --topic test     --from-beginning`  |
 
-Fault-tolerance
+### Fault-tolerance
 
-* Broker failure
+- Broker failure
   
     If the broker is a leader, then another leader will be selected by the zookeeper. That is why zookeeper keeps a check of the health of each broker. But to remove any possibilities of data loss, it is important that multiple replication is set so that another broker has got the partition data that failed broker used to have.
 
     The replication is set through `--replication-factor` configuration property set against each topic. By redundancy factory you can achieve:
 
-  * Redundancy of messages
-  * Cluster resiliency
-  * Fault-tolerance
-  * N-1 broker failure tolerance
+  - Redundancy of messages
+  - Cluster resiliency
+  - Fault-tolerance
+  - N-1 broker failure tolerance
   
-* Network failure
-* Disk failure
+- Network failure
+- Disk failure
 
 To check the current replication factor of a topic:
 
@@ -285,11 +283,11 @@ It will show IRS - in-sync replica. When it is equal to number of replication fa
 
 Just like producer, consumer also need three mandatory properties.
 
-* `bootstrap.servers` - it is a comma separated list of broker servers, in the format of {servername/ip}:{port}, which is used to retrieve the information about the entire cluster membership: partition leaders, etc.
+- `bootstrap.servers` - it is a comma separated list of broker servers, in the format of {servername/ip}:{port}, which is used to retrieve the information about the entire cluster membership: partition leaders, etc.
 
-* `key.deserializer` - Class used for message key deserialization. By defining key deserializer you are defining strongly type for the key that is expected.
+- `key.deserializer` - Class used for message key deserialization. By defining key deserializer you are defining strongly type for the key that is expected.
 
-* `value.deserializer` - Class used for message value deserialization. By defining value deserializer you are defining strongly type for the value that is expected.
+- `value.deserializer` - Class used for message value deserialization. By defining value deserializer you are defining strongly type for the value that is expected.
 
 ```java
 props.put("bootstrap.servers", "localhost:9092, localhost:9093");
@@ -299,7 +297,7 @@ props.put("value.deserializer","org.apache.kafka.common.serialization.StringDese
 
 You can consume topics through two ways:
 
-* Subscribe
+- Subscribe
 
   Consumers can subscribe to a topic or multiple topics using subscribe(...). You don't have to worry about each partition where the data will come from. If there is any new partition, the cluster metadata will be changed, thus the subscriber will get to know automatically and will get data from that new partition as well; it works like auto-administrating mode.
 
@@ -311,7 +309,7 @@ You can consume topics through two ways:
     consumer.subscribe(topic);
     ```
 
-* Assign
+- Assign
 
   Consumers can subscribe to a specific topic partition using assign(...). In this version of subscription, the consumer will tell which partition it would want to listen and consume messages from. Thus, it will not read messages coming to some specific partition; it works like self-administrating mode.
 
@@ -332,16 +330,16 @@ It is a placeholder/ or a bookmark that is maintained by the Kafka Consumer. It 
 
 Offset Types:
 
-* Last committed offset - the last record that the consumer has confirmed that it has processed. For each partition, there will be a separate offset.
-* Current position offset - As the consumer reads message, it moves the counter.
-* Log-end offset - last index of a message in that partition.
-* Un-committed offsets - As the consumer advances, the difference between last committed offset and customer position offset is called un-committed offsets.
+- Last committed offset - the last record that the consumer has confirmed that it has processed. For each partition, there will be a separate offset.
+- Current position offset - As the consumer reads message, it moves the counter.
+- Log-end offset - last index of a message in that partition.
+- Un-committed offsets - As the consumer advances, the difference between last committed offset and customer position offset is called un-committed offsets.
 
 Important Configuration properties
 
-* enable.auto.commit(true) - it uses auto.commit.interval.ms (5000) power to commit the last committed offset flag automatically.
-* auto.commit.interval.ms(5000ms) - It is defined in ms. Please note that even if the process takes longer than 5000 ms, it will commit the record even when it is not processed by the system. What happened if the process is failed and "last committed offset" has already moved on?
-* auto.offset.reset(latest) - It can be latest, earliest, none value.
+- enable.auto.commit(true) - it uses auto.commit.interval.ms (5000) power to commit the last committed offset flag automatically.
+- auto.commit.interval.ms(5000ms) - It is defined in ms. Please note that even if the process takes longer than 5000 ms, it will commit the record even when it is not processed by the system. What happened if the process is failed and "last committed offset" has already moved on?
+- auto.offset.reset(latest) - It can be latest, earliest, none value.
 
 Kafka stores offsets in __consumer_offsets topic. It has 0 to 49 (50) partitions.Consumer cordinator is responsible to manage __consumer_offsets topic.
 
@@ -351,21 +349,21 @@ Manual Offset management:
 
 By setting enable.auto.commit to false will make offset management manually.
 
-* commitSync()
-* commitAsync()account
+- commitSync()
+- commitAsync()account
 
 Why you want to take a offset management control?
 
-* You will use manual offset management for higher consistency control.
-* Atomicity - Exactly once vs At least once
+- You will use manual offset management for higher consistency control.
+- Atomicity - Exactly once vs At least once
 
 Common configuration
 
-* Consumer performance and efficiency
-  * fetch.min.bytes
-  * max.fetch.wait.ms
-  * max.partition.fetch.bytes
-  * max.poll.records
+- Consumer performance and efficiency
+  - fetch.min.bytes
+  - max.fetch.wait.ms
+  - max.partition.fetch.bytes
+  - max.poll.records
 kink
 
 ##### Offset commands
@@ -394,7 +392,6 @@ It is used to bring parallelism in managing and processing events.
 Consumer can subscribe to a group using "group.id" property.
 You can create number of consumer equal or more than partitions. If you have more consumer than partitions, the consumer will seat idle.
 
-
 ## Kafka Consumer Groups
 
 | Type   | Command      |     Example    |  
@@ -419,8 +416,7 @@ Consistency and Productivity - There is an integration cost involved with develo
 
 Fast Data - Kafka Stream based process has been introduced to stream data into a different environment such as Kafka Spark, Hadoop in real time.
 
-
-### Confluent Schema Registry
+## Confluent Schema Registry
 
 It is a versioned schema registry for Apache Avro, which is used to serialize and deserilize complex data formats when interacting with kafka.
 Schema registry becomes a central point to store these schemas, in which Kafka producers and consumers interact to know the message template. The producer can specify the complex format for the data that it wants to publish, and consumer will then consult schema registry to understand the message format and read appropriately.
@@ -435,7 +431,7 @@ Schema compatibility checking is by default set as "Backward". For more details 
 
 `You can interact with the registry api using http://localhost:8081`.
 
-#### Confluent Schema Registry UI
+### Confluent Schema Registry UI
 
 You can interact with registry, using [this](https://github.com/lensesio/schema-registry-ui) open source UI.
 
@@ -443,20 +439,19 @@ You can interact with registry, using [this](https://github.com/lensesio/schema-
 
 > Known issue with [502 Bad Gateway](https://github.com/lensesio/schema-registry-ui/issues/64)
 
-### Confluent REST PROXY
+## Confluent REST Proxy
 
 ![Confluent REST Proxy](https://github.com/codebased/learning/blob/master/ReadMe/kafka/drawio/Confluent%20REST%20Proxy.png?raw=true)
 
+# REFERENCES
 
-REFERENCES:
-
-### Confluent Schema
+## Confluent Schema
 
 [Schema Management](https://docs.confluent.io/current/schema-registry/index.html)
 
 [Schema Registry Tutorial](https://docs.confluent.io/current/schema-registry/schema_registry_tutorial.html)
 
-Future Topics:
+# Future Topics
 
 [SAGA Architecture](https://stackoverflow.com/questions/43845183/implementing-sagas-with-kafka)
 
