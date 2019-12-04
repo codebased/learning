@@ -387,7 +387,6 @@ Fast Data - Kafka Stream based process has been introduced to stream data into a
 ### Confluent Schema Registry
 
 It is a versioned schema registry for Apache Avro, which is used to serialize and deserilize complex data formats when interacting with kafka.
-
 Schema registry becomes a central point to store these schemas, in which Kafka producers and consumers interact to know the message template. The producer can specify the complex format for the data that it wants to publish, and consumer will then consult schema registry to understand the message format and read appropriately.
 
 Schemas can be applied on keys, and values in the message.
@@ -395,6 +394,26 @@ Schemas can be applied on keys, and values in the message.
 `Think of these schemas as WSDL in web service environment (WSDL is an XML document that describes a web service methods, request message schema and response message schema).`
 
 ![Confluent Schema Registry Block Diagram](https://github.com/codebased/learning/blob/master/ReadMe/kafka/drawio/Confluent%20Schema%20Registry.png?raw=true)
+
+Schema compatibility checking is by default set as "Backward". For more details on different type of compatibility types, please see [this](https://docs.confluent.io/current/schema-registry/avro.html) and [this](https://docs.confluent.io/current/schema-registry/schema_registry_tutorial.html#schema-evolution-and-compatibility)
+
+`You can interact with the registry api using http://localhost:8081`.
+
+#### Confluent Schema Registry UI
+
+You can interact with registry, using [this](https://github.com/lensesio/schema-registry-ui) open source UI.
+
+`docker run --rm -p 8000:8000 -e "SCHEMAREGISTRY_URL=http://192.168.1.107:8081"  -e "PROXY=true" landoop/schema-registry-ui`
+
+> Known issue with [502 Bad Gateway](https://github.com/lensesio/schema-registry-ui/issues/64)
+
+REFERENCES:
+
+### Confluent Schema
+
+[Schema Management](https://docs.confluent.io/current/schema-registry/index.html)
+
+[Schema Registry Tutorial](https://docs.confluent.io/current/schema-registry/schema_registry_tutorial.html)
 
 Future Topics:
 
