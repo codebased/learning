@@ -407,6 +407,11 @@ You can interact with registry, using [this](https://github.com/lensesio/schema-
 
 > Known issue with [502 Bad Gateway](https://github.com/lensesio/schema-registry-ui/issues/64)
 
+### Confluent REST PROXY
+
+![Confluent REST Proxy](https://github.com/codebased/learning/blob/master/ReadMe/kafka/drawio/Confluent%20REST%20Proxy.png?raw=true)
+
+
 REFERENCES:
 
 ### Confluent Schema
