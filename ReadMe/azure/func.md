@@ -1,3 +1,16 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [Introduction](#introduction)
+  - [Setup Script](#setup-script)
+  - [Code](#code)
+    - [Exception Handling](#exception-handling)
+  - [Concurrency/ scaling](#concurrency-scaling)
+  - [References](#references)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # Introduction
 
 Azure functions are an implementaiton of serverless computing that allows the running of code on-demand. Functions are event-drive and shortlived and provide for automatic scalability to meet demand.

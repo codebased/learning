@@ -1,3 +1,20 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [Manage Resources Group and Resources](#manage-resources-group-and-resources)
+  - [Login to azure through az cli](#login-to-azure-through-az-cli)
+  - [View current account and tenant id (guid)](#view-current-account-and-tenant-id-guid)
+  - [Get a list of providers](#get-a-list-of-providers)
+  - [Get a list of your current resources](#get-a-list-of-your-current-resources)
+  - [Get a group name details](#get-a-group-name-details)
+  - [Create a new group](#create-a-new-group)
+  - [Delete delete group](#delete-delete-group)
+  - [Task: Move existing resource to a new group](#task-move-existing-resource-to-a-new-group)
+  - [Get list of resources within a group](#get-list-of-resources-within-a-group)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # Manage Resources Group and Resources
 
 ## Login to azure through az cli

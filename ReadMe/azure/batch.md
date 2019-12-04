@@ -1,3 +1,11 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [Batch](#batch)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # Batch
 
 If you have a program that performs extensive operation as a scheduler or on demand, you can use this feature called Azure Batch.

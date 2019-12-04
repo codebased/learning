@@ -1,3 +1,41 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [Manage Disk (Linux)](#manage-disk-linux)
+  - [login interactively and set a subscription to be the current active subscription](#login-interactively-and-set-a-subscription-to-be-the-current-active-subscription)
+  - [Creating a new data disk with Azure CLI and attach it to our VM. This can be done hot](#creating-a-new-data-disk-with-azure-cli-and-attach-it-to-our-vm-this-can-be-done-hot)
+    - [1 - Attach the new disk](#1---attach-the-new-disk)
+    - [2 - Prepare the disk for use by the operating system](#2---prepare-the-disk-for-use-by-the-operating-system)
+    - [3 - Find the new block decvice, we know /dev/sda is the OS, and /dev/sdb is the temporary disk](#3---find-the-new-block-decvice-we-know-devsda-is-the-os-and-devsdb-is-the-temporary-disk)
+    - [4 - partition the disk with fdisk and use the following commands to name a new primary parition](#4---partition-the-disk-with-fdisk-and-use-the-following-commands-to-name-a-new-primary-parition)
+    - [5 - format the new partition with ext4](#5---format-the-new-partition-with-ext4)
+    - [6 - Make a directory to mount the new disk under](#6---make-a-directory-to-mount-the-new-disk-under)
+    - [7 - Add the following line to /etc/fstab. First find the UUID for this device, in our case it's /dev/sdc1](#7---add-the-following-line-to-etcfstab-first-find-the-uuid-for-this-device-in-our-case-its-devsdc1)
+    - [8 - mount the volume and verify the file system is mounted](#8---mount-the-volume-and-verify-the-file-system-is-mounted)
+    - [9 - Exit from the Linux VM](#9---exit-from-the-linux-vm)
+  - [Resizing a disk](#resizing-a-disk)
+    - [1 - Stop and deallocate the VM. this has to be an offline operation](#1---stop-and-deallocate-the-vm-this-has-to-be-an-offline-operation)
+    - [2 - Find the disk's name we want to expand](#2---find-the-disks-name-we-want-to-expand)
+    - [3 - Update the disk's size to the desired size](#3---update-the-disks-size-to-the-desired-size)
+    - [4 - start up the VM again](#4---start-up-the-vm-again)
+    - [5 - Log into the guest OS and resize the volume](#5---log-into-the-guest-os-and-resize-the-volume)
+    - [6 - Unmount filesystem and expand the partition](#6---unmount-filesystem-and-expand-the-partition)
+    - [7 - fsck, expand and mount the filesystem](#7---fsck-expand-and-mount-the-filesystem)
+    - [8 - Verify the added space is available](#8---verify-the-added-space-is-available)
+  - [Removing a disk](#removing-a-disk)
+    - [1 - Umount the disk in the OS, remove the disk we added above from fstab](#1---umount-the-disk-in-the-os-remove-the-disk-we-added-above-from-fstab)
+    - [2 - Detaching the disk from the virtual machine. This can be done online too](#2---detaching-the-disk-from-the-virtual-machine-this-can-be-done-online-too)
+    - [3 - Delete the disk](#3---delete-the-disk)
+  - [Snapshotting the OS disk](#snapshotting-the-os-disk)
+    - [1 - Find the disk we want to snapshot and create a snapshot of the disk](#1---find-the-disk-we-want-to-snapshot-and-create-a-snapshot-of-the-disk)
+    - [2 - Getting a list of the snapshots available](#2---getting-a-list-of-the-snapshots-available)
+    - [3 - Create a new disk from the snapshot we just created](#3---create-a-new-disk-from-the-snapshot-we-just-created)
+    - [4 - Create a VM from the disk we just created](#4---create-a-vm-from-the-disk-we-just-created)
+    - [5 - If we want we can delete a snapshot when we're finished](#5---if-we-want-we-can-delete-a-snapshot-when-were-finished)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # Manage Disk (Linux)
 
 * 1 - Attach a disk to an existing VM

@@ -1,3 +1,12 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [Azure Service Principal](#azure-service-principal)
+  - [Scripts](#scripts)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # Azure Service Principal
 
 It is also called Managed Service Identity (MSI). The purpose of this service is to create an identity for your resources, like a user, and control what it can access, what it cannot.

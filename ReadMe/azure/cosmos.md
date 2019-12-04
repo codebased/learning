@@ -1,3 +1,17 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [Introduction](#introduction)
+  - [Create a SQL API Cosmos DB account with session consistency and multi-master enabled](#create-a-sql-api-cosmos-db-account-with-session-consistency-and-multi-master-enabled)
+  - [Create a database](#create-a-database)
+  - [List account keys](#list-account-keys)
+  - [List account connection strings](#list-account-connection-strings)
+  - [Clean up](#clean-up)
+  - [Consistency level](#consistency-level)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # Introduction
 
 AzureIt is a global distributed database service that is designed to provide:

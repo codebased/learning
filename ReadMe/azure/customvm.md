@@ -1,3 +1,26 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [Deprovisioning and creating a Linux custom image using Azure CLI](#deprovisioning-and-creating-a-linux-custom-image-using-azure-cli)
+  - [login interactively and set a subscription to be the current active subscription](#login-interactively-and-set-a-subscription-to-be-the-current-active-subscription)
+  - [Find the IP of the VM we want to build a custom image from](#find-the-ip-of-the-vm-we-want-to-build-a-custom-image-from)
+  - [Connect to the virtual machine via ssh](#connect-to-the-virtual-machine-via-ssh)
+  - [Deprovision the virtual machine](#deprovision-the-virtual-machine)
+  - [log out of the VM](#log-out-of-the-vm)
+  - [In Azure CLI, deallocate the virtual machine](#in-azure-cli-deallocate-the-virtual-machine)
+  - [Check out the status of our virtual machine](#check-out-the-status-of-our-virtual-machine)
+  - [Mark the virtual machine as "generalized"](#mark-the-virtual-machine-as-generalized)
+  - [Create a VM from the custom image](#create-a-vm-from-the-custom-image)
+  - [Summary image information](#summary-image-information)
+  - [More detailed image information, specifically this is a managed disk](#more-detailed-image-information-specifically-this-is-a-managed-disk)
+  - [Create a VM specifying the image we want to use](#create-a-vm-specifying-the-image-we-want-to-use)
+  - [Check out the status of a new VM](#check-out-the-status-of-a-new-vm)
+  - [You can delete the deallocated source VM](#you-can-delete-the-deallocated-source-vm)
+  - [Which will leave just the Image in our Resource Group as a managed resource](#which-will-leave-just-the-image-in-our-resource-group-as-a-managed-resource)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # Deprovisioning and creating a Linux custom image using Azure CLI
 
 ## login interactively and set a subscription to be the current active subscription

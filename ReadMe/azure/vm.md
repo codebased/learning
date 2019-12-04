@@ -1,3 +1,20 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [Virtual Machines Management](#virtual-machines-management)
+  - [Login interactively and set a subscription to be the current active subscription](#login-interactively-and-set-a-subscription-to-be-the-current-active-subscription)
+  - [Create a resource group, then query the list of resource groups in our subscription](#create-a-resource-group-then-query-the-list-of-resource-groups-in-our-subscription)
+  - [Create virtual network (vnet) and Subnet](#create-virtual-network-vnet-and-subnet)
+  - [Create public IP address](#create-public-ip-address)
+  - [Create network security group](#create-network-security-group)
+  - [Create a virtual network interface and associate with public IP address and NSG](#create-a-virtual-network-interface-and-associate-with-public-ip-address-and-nsg)
+  - [Create a virtual machine](#create-a-virtual-machine)
+  - [Open remote access port](#open-remote-access-port)
+  - [Grab the public IP of the virtual machine](#grab-the-public-ip-of-the-virtual-machine)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # Virtual Machines Management
 
 > Installing Azure CLI For mac or linux terminal\

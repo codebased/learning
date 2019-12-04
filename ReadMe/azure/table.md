@@ -1,3 +1,13 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [Storage](#storage)
+  - [How to create a storage account](#how-to-create-a-storage-account)
+  - [Development](#development)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # Storage
 
 ## How to create a storage account

@@ -1,3 +1,45 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [Hello](#hello)
+  - [Definitions](#definitions)
+    - [Concurrency](#concurrency)
+    - [Parallelism](#parallelism)
+    - [Critical Section](#critical-section)
+    - [Multithread Synchronisation for Critical Section](#multithread-synchronisation-for-critical-section)
+      - [Semaphore](#semaphore)
+      - [CountDownLatch](#countdownlatch)
+      - [CyclicBarrier](#cyclicbarrier)
+      - [Phaser](#phaser)
+      - [Exchanger](#exchanger)
+  - [Manage Threads](#manage-threads)
+    - [newCachedThreadPool](#newcachedthreadpool)
+    - [newFixedThreadPool](#newfixedthreadpool)
+    - [newSingleThreadExecutor](#newsinglethreadexecutor)
+    - [Important Executor methods](#important-executor-methods)
+      - [InvokeAny](#invokeany)
+    - [invokeAll](#invokeall)
+    - [Future.cancel](#futurecancel)
+      - [ScheduledThreadPoolExecutor](#scheduledthreadpoolexecutor)
+  - [FutureTask](#futuretask)
+  - [Fork/ Join](#fork-join)
+    - [ForkJoinPool](#forkjoinpool)
+    - [ForkJoinTask](#forkjointask)
+  - [Concurrent Collections](#concurrent-collections)
+    - [ConcurrentLinkedDeque](#concurrentlinkeddeque)
+    - [LinkedBlockingDeque](#linkedblockingdeque)
+    - [LinkedTransferQueue](#linkedtransferqueue)
+    - [PriorityBlockingQueue](#priorityblockingqueue)
+    - [DelayQueue](#delayqueue)
+    - [ConcurrentSkipListMap](#concurrentskiplistmap)
+    - [ThreadLocalRandom](#threadlocalrandom)
+    - [AtomicIntegerArray](#atomicintegerarray)
+  - [Liveness](#liveness)
+  - [ThreadLocalRandom](#threadlocalrandom-1)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # Hello
 
 ## Definitions

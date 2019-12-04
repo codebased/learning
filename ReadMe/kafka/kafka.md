@@ -1,3 +1,39 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [KAFKA](#kafka)
+  - [Setup Environment](#setup-environment)
+    - [Vanilla Installation](#vanilla-installation)
+    - [Docker Installation](#docker-installation)
+  - [Architecture Components](#architecture-components)
+    - [Topic](#topic)
+      - [Topic Commands](#topic-commands)
+      - [Partitioning](#partitioning)
+      - [Message Retention Policy](#message-retention-policy)
+  - [Kafka Producer Consumer Console](#kafka-producer-consumer-console)
+  - [Concepts](#concepts)
+    - [Commit Logs](#commit-logs)
+    - [Partitions](#partitions)
+  - [Message Buffer](#message-buffer)
+    - [Producer](#producer)
+      - [Delivery Guarantees](#delivery-guarantees)
+    - [Consumer](#consumer)
+      - [The Poll Loop](#the-poll-loop)
+      - [The Offset](#the-offset)
+        - [Offset commands](#offset-commands)
+      - [Internal __consumer_offsets](#internal-__consumer_offsets)
+      - [Read from __consumer_offsets](#read-from-__consumer_offsets)
+    - [Consumer Group](#consumer-group)
+  - [Kafka Consumer Groups](#kafka-consumer-groups)
+  - [Zookeeper](#zookeeper)
+    - [Confluent Schema Registry](#confluent-schema-registry)
+      - [Confluent Schema Registry UI](#confluent-schema-registry-ui)
+    - [Confluent REST PROXY](#confluent-rest-proxy)
+    - [Confluent Schema](#confluent-schema)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # KAFKA
 
 Apache Kafka is publish subscribe messaging rethought as a distributed commit log.

@@ -1,3 +1,14 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [Introduction](#introduction)
+  - [Commands](#commands)
+    - [Using GITHUB](#using-github)
+    - [Using DOCKER](#using-docker)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # Introduction 
 
 * If you are using Linux , you must specify which runtime stack. Windows does not have this contraint.
