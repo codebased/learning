@@ -8,6 +8,13 @@
 - [Setup Environment](#setup-environment)
   - [Vanilla Installation](#vanilla-installation)
   - [Docker Installation](#docker-installation)
+  - [Important Configuration](#important-configuration)
+    - [message.max.bytes](#messagemaxbytes)
+    - [num.partitions](#numpartitions)
+    - [log.retention.ms](#logretentionms)
+    - [log.retention.bytes](#logretentionbytes)
+    - [log.segment.bytes](#logsegmentbytes)
+    - [log.segment.ms](#logsegmentms)
 - [Kafka Components](#kafka-components)
   - [Topic](#topic)
     - [Topic Commands](#topic-commands)
@@ -29,6 +36,7 @@
   - [Confluent Schema Registry](#confluent-schema-registry)
     - [Confluent Schema Registry UI](#confluent-schema-registry-ui)
   - [Confluent REST Proxy](#confluent-rest-proxy)
+  - [KSQL](#ksql)
 - [REFERENCES](#references)
   - [Confluent Schema](#confluent-schema)
 - [Future Topics](#future-topics)
@@ -89,6 +97,56 @@ After the successful response, you will have the whole kafka environment running
 >Pre-requisite
 >
 > Install Docker Compose <https://docs.docker.com/compose/install/>
+
+## Important Configuration
+
+The following configuration will have a direct impact on Kafka broker performance.
+
+### message.max.bytes
+
+The default value for your *compressed* message should be 1 MB. The larger your message size is, broker thread will be more busy with network connection, and request will be working longer on each request; larger message will also increase disk write operations.rome
+
+Please note that the value in `message.max.bytes` must be coordinated with the `fetch.message.max.bytes` configuration on consumer clients. If the value is small in `fetch.message.meax.bytes` then consumer will not be able to fetch a larger messages. Thus the consumer will get stuck and will never be able to proceed further.
+
+The same applies to `replica.fetch.max.bytes` configuration on the brokers when configured in a cluster.
+
+### num.partitions
+
+The number of partitions for your topic. By default it is set as 1. Please note that the number of partitions for a topic can only increase and never decrease. Generally speaking, number of partitions are equal to number of brokers in the cluster. It makes message load management much easier.
+
+You can use this calculation to decide number of partitions:
+
+1. Number of messages produced per seconds
+2. Number of messages a consumer can process per second
+3. Divide point 1 with point 2 and you will get the partition number
+
+E.g. Producer can produce 100 records and your one consumer can process only 25 per second, then you need 100/25 = 4 partitions, so that you can also run four consumer to consume 100 messages per second.
+
+### log.retention.ms
+
+It is about how long Kafka will retain messages by time. The default value is set as 168 hours, which is 7 day.
+
+### log.retention.bytes
+
+Another way to expire your messages is based on the total number of bytes of messages retained. It applies at individual partitions, not the topic.
+
+If you have specified `log.retention.ms` as well `log.retention.bytes` then whichever comes first will be used to expire messages.
+
+### log.segment.bytes
+
+Partitions are further divided into segments, which is like a small bucket of water in a pool. Once the log segment has reached the size, which is default to 1 GB, the log segment is closed and new one is opened.
+
+Please note here that the once the log segment has been closed, it can be considered for expiration. If the segment bytes side is too small then the system has to perform expensive open and close operation. However, if it is not too small then it will not be fill and `log.retention.ms` value logic will not kick in.
+
+For e.g, if you are producing 100 MB of data in a producer per day, and your segment size is 1 GB, then it will take 10 days to fill your segment. If your retention period is 7 days, then it will expire your messages in 17 days.
+
+It will be right to say that the `log.retention.ms` is applied on log segment and not on individual message.
+
+Another factor to consider while defining segment size is, when requesting offsets by timestamps.
+
+### log.segment.ms
+
+You can control the behavior of closing segment file using `log.segment.ms`. There is no default setting set for this property.
 
 # Kafka Components
 
@@ -415,15 +473,30 @@ Schema compatibility checking is by default set as "Backward". For more details 
 
 ### Confluent Schema Registry UI
 
-You can interact with registry, using [this](https://github.com/lensesio/schema-registry-ui) open source UI.
+You can interact with schema registry, using [this](https://github.com/lensesio/schema-registry-ui) open source UI.
 
 `docker run --rm -p 8000:8000 -e "SCHEMAREGISTRY_URL=http://192.168.1.107:8081"  -e "PROXY=true" landoop/schema-registry-ui`
 
 > Known issue with [502 Bad Gateway](https://github.com/lensesio/schema-registry-ui/issues/64)
 
+PS: This UI uses the confluent REST Proxy APIs.
+
 ## Confluent REST Proxy
 
 ![Confluent REST Proxy](https://github.com/codebased/learning/blob/master/ReadMe/kafka/drawio/Confluent%20REST%20Proxy.png?raw=true)
+
+## KSQL
+
+KSQL is a stream on kafka topic with the schema.
+
+You can create a shce
+
+CREATE STREAM MQTT_RAW
+    (TID  VARCHAR, BATT INTEGER, LON       DOUBLE,  LAT  DOUBLE,
+     TST  BIGINT,  ALT  INTEGER, COG       INTEGER, VEL  INTEGER,
+     P    DOUBLE,  BS   INTEGER, CONN      VARCHAR, ACC  INTEGER,
+     T    VARCHAR, VAC  INTEGER, INREGIONS VARCHAR, TYPE VARCHAR)
+WITH (KAFKA_TOPIC = 'data_mqtt', VALUE_FORMAT='JSON');
 
 # REFERENCES
 
