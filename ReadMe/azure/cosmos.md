@@ -99,7 +99,7 @@ The partition, where system is always running even when one node is not alive.
 | Bounded Staleness     | Trades off lag for ensuring reads return the most recent write. Lag can be specified in time or number of operations.      |C: Consistent to a bound, A:LOW, P: LOW, Latency: High, Throughput: Low |App showing status, tracking,scores, tickers, etc.|
 | Session | Default consistency in Cosmos Db. All reads on the same session (connection) are consistent.  So if you write something you will read your write. But may be not another person write.    |   C: Strong for the session, A: High, P: Moderate, Latency: Moderate, Throughput: Moderate|Social apps, fitness apps, shopping cart|
 | Consistent Prefix | Bounded staleness without lag/delay. You will read consistent data  but it may be n older version      |    C: LoW, A:HIGH, P: LOW  Latency: Low, Throughput: Moderate|Social media (comments, likes), apps with updates like scores|
-| Eventual Consistency | Highest availabilty and performance, but no guarantee that a rea within any specific time, for anyone, sees the latest data,. But it will eventually be consistent - no loss due to igh availability.      | C: LOWEST, A:HIGHEST, P: HIGHEST, Latency: Low Throughput: Highest|Non-ordered updates like reviews and ratings, aggregated status|
+| Eventual Consistency | Highest availabilty and performance, but no guarantee that a read within any specific time, for anyone, sees the latest data,. But it will eventually be consistent - no loss due to igh availability.      | C: LOWEST, A:HIGHEST, P: HIGHEST, Latency: Low Throughput: Highest|Non-ordered updates like reviews and ratings, aggregated status|
 
 References:
 
